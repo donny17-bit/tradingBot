@@ -2,7 +2,7 @@
   "name": "tradingBot",
   "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "dependencies": {
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
@@ -12,8 +12,11 @@
   "devDependencies": {
     "nodemon": "^3.1.9"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
