@@ -9,7 +9,10 @@ const PORT = process.env.PORT;
 app.use(bodyParser.json());
 
 const orderRouter = require("./routes/order");
+const positionRouter = require("./routes/position");
+
 app.use(orderRouter);
+app.use(positionRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
