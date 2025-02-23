@@ -87,7 +87,7 @@ router.post("/place-order", async (req, res) => {
       productType: "USDT-FUTURES",
       marginMode: "isolated",
       marginCoin: "USDT",
-      size: req.body.contracts,
+      size: req.body.positionSize,
       side: req.body.action,
       tradeSide: "open",
       orderType: "limit",
@@ -123,7 +123,7 @@ router.post("/place-order", async (req, res) => {
     //  place the new order
     body.side = req.body.action;
     body.tradeSide = "open";
-    body.size = req.body.contracts;
+    body.size = req.body.positionSize;
     const options = option(
       "POST",
       "/api/v2/mix/order/place-order",
