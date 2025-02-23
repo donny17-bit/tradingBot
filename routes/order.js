@@ -81,18 +81,17 @@ router.post("/place-order", async (req, res) => {
 
   try {
     const price = await getCurrentPrice();
-    const leverage = process.env.LEVERAGE;
-    const size = parseFloat(leverage) / parseFloat(price);
 
     let body = {
       symbol: "BTCUSDT",
       productType: "USDT-FUTURES",
       marginMode: "isolated",
       marginCoin: "USDT",
-      size: size,
+      size: req.body.contracts,
       side: req.body.action,
       tradeSide: "open",
-      orderType: "market",
+      orderType: "limit",
+      price: price,
     };
 
     // check if there is an open position
@@ -124,7 +123,7 @@ router.post("/place-order", async (req, res) => {
     //  place the new order
     body.side = req.body.action;
     body.tradeSide = "open";
-    body.size = size;
+    body.size = req.body.contracts;
     const options = option(
       "POST",
       "/api/v2/mix/order/place-order",
