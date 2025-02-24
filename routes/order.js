@@ -93,7 +93,7 @@ router.post("/place-order", async (req, res) => {
       side: req.body.action,
       tradeSide: "open",
       orderType: "limit",
-      force: "post_only",
+      force: process.env.FORCE,
     };
 
     // check if there is an open position
