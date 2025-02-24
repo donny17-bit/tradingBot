@@ -81,6 +81,8 @@ router.post("/place-order", async (req, res) => {
 
   try {
     const price = await getCurrentPrice();
+    const priceBuy = Number(price) - Number(process.env.MARGIN_ADD_PRICE);
+    const priceSell = Number(price) + Number(process.env.MARGIN_ADD_PRICE);
     const size = Math.abs(req.body.positionSize);
 
     let body = {
@@ -89,7 +91,7 @@ router.post("/place-order", async (req, res) => {
       marginMode: "isolated",
       marginCoin: "USDT",
       size: size,
-      price: Number(price) + Number(process.env.MARGIN_ADD_PRICE),
+      price: 0,
       side: req.body.action,
       tradeSide: "open",
       orderType: "limit",
@@ -101,6 +103,7 @@ router.post("/place-order", async (req, res) => {
     if (position.length > 0) {
       // close the position
       body.side = position[0].holdSide === "long" ? "buy" : "sell";
+      body.price = position[0].holdSide === "long" ? priceSell : priceBuy;
       body.tradeSide = "close";
       body.size = position[0].total;
       const options = option(
@@ -126,6 +129,7 @@ router.post("/place-order", async (req, res) => {
     body.side = req.body.action;
     body.tradeSide = "open";
     body.size = size;
+    body.price = req.body.action === "buy" ? priceBuy : priceSell;
     const options = option(
       "POST",
       "/api/v2/mix/order/place-order",
