@@ -89,7 +89,7 @@ router.post("/place-order", async (req, res) => {
       marginMode: "isolated",
       marginCoin: "USDT",
       size: size,
-      price: price,
+      price: price + 10,
       side: req.body.action,
       tradeSide: "open",
       orderType: "limit",
