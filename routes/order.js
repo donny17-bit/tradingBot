@@ -34,12 +34,18 @@ router.post("/place-order", async (req, res) => {
   }
 
   const symbol = req.body.symbol.split(".")[0];
-  const price = req.body.price;
-  const marginPrice = req.body.marginPrice;
-  const closePriceLong = Number(price) + Number(marginPrice);
-  const closePriceShort = Number(price) - Number(marginPrice);
-  const openPriceLong = Number(price) - Number(marginPrice);
-  const openPriceShort = Number(price) + Number(marginPrice);
+  const price = Number(req.body.price);
+  const marginPrice = Number(req.body.marginPrice);
+
+  const closePriceLongTmp = price + marginPrice;
+  const closePriceShortTmp = price - marginPrice;
+  const openPriceLongTmp = price - marginPrice;
+  const openPriceShortTmp = price + marginPrice;
+
+  const closePriceLong = closePriceLongTmp.toFixed(req.body.decimalCount);
+  const closePriceShort = closePriceShortTmp.toFixed(req.body.decimalCount);
+  const openPriceLong = openPriceLongTmp.toFixed(req.body.decimalCount);
+  const openPriceShort = openPriceShortTmp.toFixed(req.body.decimalCount);
   const size = req.body.contracts;
 
   let body = {
@@ -51,7 +57,7 @@ router.post("/place-order", async (req, res) => {
     price: 0,
     side: req.body.action,
     tradeSide: "open",
-    orderType: "limit",
+    orderType: process.env.ORDER_TYPE,
     force: process.env.FORCE,
   };
 
@@ -82,7 +88,7 @@ router.post("/place-order", async (req, res) => {
       console.log(`${req.body.name} closed : `, orderClosed.data);
       res.status(200).json(orderClosed.data);
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Error placing order:", error.response.data);
       res.status(500).json({ message: "Error placing order" });
     }
   }
@@ -110,7 +116,8 @@ router.post("/place-order", async (req, res) => {
       console.log(`${req.body.name} opened : `, orderOpened.data);
       res.status(200).json(orderOpened.data);
     } catch (error) {
-      console.error("Error placing order:", error);
+      console.error("Error placing order:", error.response.data);
+      // console.log("Error placing order:", response)
       res.status(500).json({ message: "Error placing order" });
     }
   }
