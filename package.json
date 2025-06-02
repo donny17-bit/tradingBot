@@ -7,7 +7,10 @@
     "axios": "^1.7.9",
     "body-parser": "^1.20.3",
     "dotenv": "^16.4.7",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "googleapis": "^118.0.0",
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
