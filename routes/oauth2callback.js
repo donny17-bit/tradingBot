@@ -56,8 +56,6 @@ router.get("/oauth2callback", async (req, res) => {
     const profile = await gmail.users.getProfile({ userId: "me" });
     const historyId = profile.data.historyId;
 
-    console.log("profile : ", profile);
-
     // Store or update the last_history_id in DB
     await User.update(
       { last_history_id: historyId },
