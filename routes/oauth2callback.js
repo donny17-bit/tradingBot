@@ -53,6 +53,15 @@ router.get("/oauth2callback", async (req, res) => {
       },
     });
 
+    const profile = await gmail.users.getProfile({ userId: "me" });
+    const historyId = profile.data.historyId;
+
+    // Store or update the last_history_id in DB
+    await User.update(
+      { last_history_id: historyId },
+      { where: { email: userInfo.email } }
+    );
+
     // res.redirect("/get-email-message");
     res.send(
       "Authentication successful. You can now fetch emails from /emails."
