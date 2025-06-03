@@ -38,7 +38,7 @@ router.post("/gmail-notification", async (req, res) => {
     // historyTypes: ["messageAdded"],
   });
 
-  console.log("📜 History Response:", historyRes.data);
+  console.log("📜 History Response:", historyRes);
 
   const addedMessages =
     historyRes.data.history?.flatMap((h) => h.messages) || [];
