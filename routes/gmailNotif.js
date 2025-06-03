@@ -4,6 +4,30 @@ const User = require("../models/user");
 const oAuth2Client = require("../config/googleClient");
 const { google } = require("googleapis");
 
+function extractEmailBody(payload) {
+  const getBodyFromPart = (part) => {
+    if (part.body?.data) {
+      const decoded = Buffer.from(part.body.data, "base64").toString("utf-8");
+      return decoded;
+    }
+    return null;
+  };
+
+  if (payload.mimeType === "text/plain" || payload.mimeType === "text/html") {
+    return getBodyFromPart(payload);
+  }
+
+  // Sometimes the message body is in the `parts` array
+  if (payload.parts && Array.isArray(payload.parts)) {
+    for (const part of payload.parts) {
+      const result = getBodyFromPart(part);
+      if (result) return result;
+    }
+  }
+
+  return "[No message body found]";
+}
+
 router.post("/gmail-notification", async (req, res) => {
   const message = req.body.message;
 
@@ -61,35 +85,6 @@ router.post("/gmail-notification", async (req, res) => {
     console.log("📩 New Email Subject:", subject);
 
     // Print the body message
-    function extractEmailBody(payload) {
-      const getBodyFromPart = (part) => {
-        if (part.body?.data) {
-          const decoded = Buffer.from(part.body.data, "base64").toString(
-            "utf-8"
-          );
-          return decoded;
-        }
-        return null;
-      };
-
-      if (
-        payload.mimeType === "text/plain" ||
-        payload.mimeType === "text/html"
-      ) {
-        return getBodyFromPart(payload);
-      }
-
-      // Sometimes the message body is in the `parts` array
-      if (payload.parts && Array.isArray(payload.parts)) {
-        for (const part of payload.parts) {
-          const result = getBodyFromPart(part);
-          if (result) return result;
-        }
-      }
-
-      return "[No message body found]";
-    }
-
     const body = extractEmailBody(fullMessage.data.payload);
     console.log("📨 Full email body:\n", body);
 
