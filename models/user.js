@@ -8,6 +8,9 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    last_history_id: {
+      type: DataTypes.STRING, // or BIGINT if needed
+    },
     access_token: {
       type: DataTypes.TEXT,
       allowNull: false,

@@ -34,7 +34,7 @@ router.post("/gmail-notification", async (req, res) => {
   // Get changes since the last known historyId
   const historyRes = await gmail.users.history.list({
     userId: "me",
-    startHistoryId: historyId,
+    startHistoryId: user.last_history_id,
     // historyTypes: ["messageAdded"],
   });
 
@@ -92,6 +92,13 @@ router.post("/gmail-notification", async (req, res) => {
 
     const body = extractEmailBody(fullMessage.data.payload);
     console.log("📨 Full email body:\n", body);
+
+    // ✅ Store the new historyId
+    const profile = await gmail.users.getProfile({ userId: "me" });
+    await User.update(
+      { last_history_id: profile.data.historyId },
+      { where: { email } }
+    );
   }
 
   // TODO: Optionally trigger message fetch here using historyId
