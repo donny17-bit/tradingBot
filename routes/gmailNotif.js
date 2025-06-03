@@ -92,7 +92,7 @@ router.post("/gmail-notification", async (req, res) => {
     const profile = await gmail.users.getProfile({ userId: "me" });
     await User.update(
       { last_history_id: profile.data.historyId },
-      { where: { email } }
+      { where: { email: user.email } }
     );
   }
 
