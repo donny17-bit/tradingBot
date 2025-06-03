@@ -15,14 +15,31 @@ router.get("/oauth2callback", async (req, res) => {
     const oauth2 = google.oauth2({ version: "v2", auth: oAuth2Client });
     const { data: userInfo } = await oauth2.userinfo.get();
 
-    // save login info to DB
-    await User.upsert({
-      user_id: userInfo.id,
-      access_token: tokens.access_token,
-      refresh_token: tokens.refresh_token,
-      scope: tokens.scope,
-      token_type: tokens.token_type,
-      expiry_date: tokens.expiry_date,
+    console.log("User Info:", userInfo);
+
+    await User.findOne({
+      where: { email: userInfo.email },
+    }).then(async (user) => {
+      if (user) {
+        user.access_token = tokens.access_token;
+        user.refresh_token = tokens.refresh_token;
+        user.scope = tokens.scope;
+        user.token_type = tokens.token_type;
+        user.expiry_date = tokens.expiry_date;
+        user.updated_at = new Date();
+        user.save();
+      } else {
+        // save login info to DB
+        await User.upsert({
+          email: userInfo.email,
+          access_token: tokens.access_token,
+          refresh_token: tokens.refresh_token,
+          scope: tokens.scope,
+          token_type: tokens.token_type,
+          expiry_date: tokens.expiry_date,
+          created_at: new Date(),
+        });
+      }
     });
 
     // 👇 Gmail Push Notification Setup

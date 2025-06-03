@@ -4,7 +4,7 @@ const sequelize = require("../config/db");
 const User = sequelize.define(
   "User",
   {
-    user_id: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -31,10 +31,14 @@ const User = sequelize.define(
     },
     updated_at: {
       type: DataTypes.DATE,
+      allowNull: true,
+      defaultValue: null,
     },
   },
   {
     tableName: "user",
+    timestamps: false,
+    underscored: true,
   }
 );
 
