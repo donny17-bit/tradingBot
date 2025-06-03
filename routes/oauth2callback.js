@@ -25,6 +25,18 @@ router.get("/oauth2callback", async (req, res) => {
       expiry_date: tokens.expiry_date,
     });
 
+    // 👇 Gmail Push Notification Setup
+    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
+    await gmail.users.watch({
+      userId: "me",
+      requestBody: {
+        topicName: process.env.PUB_SUB_TOPIC,
+        labelIds: ["INBOX"],
+        labelFilterAction: "include",
+      },
+    });
+
+    // res.redirect("/get-email-message");
     res.send(
       "Authentication successful. You can now fetch emails from /emails."
     );

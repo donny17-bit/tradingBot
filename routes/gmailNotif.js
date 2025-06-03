@@ -4,7 +4,7 @@ const User = require("../models/user");
 const oAuth2Client = require("../config/googleClient");
 const { google } = require("googleapis");
 
-router.get("/gmail-notification", async (req, res) => {
+router.post("/gmail-notification", async (req, res) => {
   const message = req.body.message;
 
   if (!message || !message.data) {
@@ -15,7 +15,13 @@ router.get("/gmail-notification", async (req, res) => {
   console.log("🔔 New Gmail notification:", data);
 
   // TODO: Optionally trigger message fetch here using historyId
-  res.status(200).send("OK");
+  const history = await gmail.users.history.list({
+    userId: "me",
+    startHistoryId: lastKnownHistoryId,
+    historyTypes: ["messageAdded"],
+  });
+
+  res.status(200).send("OK message received");
 });
 
 module.exports = router;

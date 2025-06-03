@@ -9,6 +9,8 @@ function getUserIdFromGoogle(oAuth2Client) {
   return oauth2.userinfo.get().then((res) => res.data.id);
 }
 
+// no need this route because gmail notif also will read latest email
+
 router.get("/get-email-message", async (req, res) => {
   try {
     // Use access_token from query (in production you'd use session or JWT)
@@ -39,17 +41,6 @@ router.get("/get-email-message", async (req, res) => {
       if (tokens.access_token) updates.access_token = tokens.access_token;
       if (tokens.expiry_date) updates.expiry_date = tokens.expiry_date;
       await User.update(updates, { where: { user_id: userId } });
-    });
-
-    const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
-
-    await gmail.users.watch({
-      userId: "me",
-      requestBody: {
-        topicName: "projects/YOUR_PROJECT_ID/topics/gmail-push-topic", // Replace with your actual topic
-        labelIds: ["INBOX"],
-        labelFilterAction: "include",
-      },
     });
 
     const list = await gmail.users.messages.list({
