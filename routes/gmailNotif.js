@@ -4,11 +4,6 @@ const User = require("../models/user");
 const oAuth2Client = require("../config/googleClient");
 const { google } = require("googleapis");
 
-function getUserIdFromGoogle(oAuth2Client) {
-  const oauth2 = google.oauth2({ version: "v2", auth: oAuth2Client });
-  return oauth2.userinfo.get().then((res) => res.data.id);
-}
-
 router.post("/gmail-notification", async (req, res) => {
   const message = req.body.message;
 
@@ -40,8 +35,10 @@ router.post("/gmail-notification", async (req, res) => {
   const historyRes = await gmail.users.history.list({
     userId: "me",
     startHistoryId: historyId,
-    historyTypes: ["messageAdded"],
+    // historyTypes: ["messageAdded"],
   });
+
+  console.log("📜 History Response:", historyRes.data);
 
   const addedMessages =
     historyRes.data.history?.flatMap((h) => h.messages) || [];
