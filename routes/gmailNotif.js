@@ -15,11 +15,6 @@ router.post("/gmail-notification", async (req, res) => {
   console.log("🔔 New Gmail notification:", data);
 
   // TODO: Optionally trigger message fetch here using historyId
-  const history = await gmail.users.history.list({
-    userId: "me",
-    startHistoryId: lastKnownHistoryId,
-    historyTypes: ["messageAdded"],
-  });
 
   res.status(200).send("OK message received");
 });
