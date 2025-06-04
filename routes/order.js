@@ -124,6 +124,8 @@ router.post("/place-order", async (req, res) => {
   //     res.status(500).json({ message: "Error placing order" });
   //   }
   // }
+
+  res.status(200).send("OK order request recieved");
 });
 
 module.exports = router;
