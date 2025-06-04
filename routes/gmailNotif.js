@@ -134,7 +134,7 @@ router.post("/gmail-notification", async (req, res) => {
       jsonPayload.hasOwnProperty(key)
     );
     if (!isValid) {
-      console.log("⚠️ JSON body missing required fields:", parsedJson);
+      console.log("⚠️ JSON body missing required fields:", jsonPayload);
       return res.status(400).send("Missing fields, skipped");
     }
 
