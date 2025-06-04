@@ -146,9 +146,8 @@ tradingbot/
 **Donny Wahyu** 
 > *Web Developer | Trader*
 
-GitHub: [@drive1andonly](https://github.com/donny17-bit)  
+GitHub: [@donny17-bit](https://github.com/donny17-bit)  
 Instagram: [@_donny_w](https://instagram.com/_donny_w)
-
 
 ---
 
