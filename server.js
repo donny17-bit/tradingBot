@@ -18,14 +18,12 @@ app.use(bodyParser.json());
 
 const orderRouter = require("./routes/order");
 const positionRouter = require("./routes/position");
-const emailRouter = require("./routes/email");
 const oauthRouter = require("./routes/oauth2callback");
 const loginRouter = require("./routes/login");
 const gmailNotifRouter = require("./routes/gmailNotif");
 
 app.use(orderRouter);
 app.use(positionRouter);
-app.use(emailRouter);
 app.use(oauthRouter);
 app.use(loginRouter);
 app.use(gmailNotifRouter);

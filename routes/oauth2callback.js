@@ -15,8 +15,6 @@ router.get("/oauth2callback", async (req, res) => {
     const oauth2 = google.oauth2({ version: "v2", auth: oAuth2Client });
     const { data: userInfo } = await oauth2.userinfo.get();
 
-    console.log("User Info:", userInfo);
-
     await User.findOne({
       where: { email: userInfo.email },
     }).then(async (user) => {
