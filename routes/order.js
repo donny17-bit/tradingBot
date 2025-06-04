@@ -65,6 +65,7 @@ router.post("/place-order", async (req, res) => {
 
   // check if there is an open position
   const position = req.body.positionSize;
+  console.log("Position size:", position);
 
   // close position (flat)
   if (position == 0) {
