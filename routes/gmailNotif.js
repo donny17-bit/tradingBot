@@ -79,7 +79,7 @@ router.post("/gmail-notification", async (req, res) => {
     });
 
     // 🔐 Filter sender
-    const headers = msg.data.payload.headers;
+    const headers = fullMessage.data.payload.headers;
     const from = headers.find((h) => h.name === "From")?.value || "";
 
     if (!from.includes(process.env.EMAIL_FROM)) {
