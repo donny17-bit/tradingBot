@@ -85,9 +85,8 @@ router.post("/gmail-notification", async (req, res) => {
     console.log("📩 New Email Subject:", subject);
 
     // Print the body message
-    const bodyData = msg.data.payload.parts?.find(
-      (p) => p.mimeType === "text/plain"
-    )?.body?.data;
+    const bodyData = msg.data.parts?.find((p) => p.mimeType === "text/plain")
+      ?.body?.data;
     if (!bodyData) return res.status(400).send("No message body found");
 
     const decoded = Buffer.from(bodyData, "base64").toString("utf-8");
