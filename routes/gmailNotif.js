@@ -130,11 +130,12 @@ router.post("/gmail-notification", async (req, res) => {
       "time",
     ];
 
-    const isValid = requiredKeys.every((key) =>
-      jsonPayload.hasOwnProperty(key)
+    const missingKeys = requiredKeys.filter(
+      (key) => !jsonPayload.hasOwnProperty(key)
     );
-    if (!isValid) {
-      console.log("⚠️ JSON body missing required fields:", jsonPayload);
+
+    if (missingKeys.length > 0) {
+      console.log("⚠️ JSON body missing required fields:", missingKeys);
       return res.status(400).send("Missing fields, skipped");
     }
 
