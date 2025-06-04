@@ -82,6 +82,13 @@ router.post("/gmail-notification", async (req, res) => {
     const headers = fullMessage.data.payload.headers;
     const from = headers.find((h) => h.name === "From")?.value || "";
 
+    // ✅ Store the new historyId
+    const profile = await gmail.users.getProfile({ userId: "me" });
+    await User.update(
+      { last_history_id: profile.data.historyId },
+      { where: { email: user.email } }
+    );
+
     if (!from.includes(process.env.EMAIL_FROM)) {
       console.log("Skipping unauthorized sender:", from);
       return res.status(200).send("Not from allowed sender");
@@ -107,13 +114,6 @@ router.post("/gmail-notification", async (req, res) => {
       console.error("Invalid JSON in email body:", err);
       return res.status(400).send("Email body is not valid JSON");
     }
-
-    // ✅ Store the new historyId
-    const profile = await gmail.users.getProfile({ userId: "me" });
-    await User.update(
-      { last_history_id: profile.data.historyId },
-      { where: { email: user.email } }
-    );
 
     // 🚀 Send request to /order
     console.log("🚀 Sending order request jsonPayload:", jsonPayload);
