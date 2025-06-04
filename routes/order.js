@@ -33,6 +33,8 @@ router.post("/place-order", async (req, res) => {
     return options;
   }
 
+  console.log("Received request body:", req.body);
+
   const symbol = req.body.symbol.split(".")[0];
   const price = Number(req.body.price);
   const marginPrice = Number(req.body.marginPrice);
@@ -93,34 +95,34 @@ router.post("/place-order", async (req, res) => {
     }
   }
   // open position
-  else {
-    body.price =
-      req.body.marketPosition === "long" ? openPriceLong : openPriceShort;
-    body.side = req.body.action;
-    body.tradeSide = "open";
+  // else {
+  //   body.price =
+  //     req.body.marketPosition === "long" ? openPriceLong : openPriceShort;
+  //   body.side = req.body.action;
+  //   body.tradeSide = "open";
 
-    const options = option(
-      "POST",
-      "/api/v2/mix/order/place-order",
-      undefined,
-      body
-    );
+  //   const options = option(
+  //     "POST",
+  //     "/api/v2/mix/order/place-order",
+  //     undefined,
+  //     body
+  //   );
 
-    try {
-      const orderOpened = await axios.post(
-        `${process.env.API_DOMAIN}/api/v2/mix/order/place-order`,
-        body,
-        options
-      );
+  //   try {
+  //     const orderOpened = await axios.post(
+  //       `${process.env.API_DOMAIN}/api/v2/mix/order/place-order`,
+  //       body,
+  //       options
+  //     );
 
-      console.log(`${req.body.name} opened : `, orderOpened.data);
-      res.status(200).json(orderOpened.data);
-    } catch (error) {
-      console.error("Error placing order:", error.response.data);
-      // console.log("Error placing order:", response)
-      res.status(500).json({ message: "Error placing order" });
-    }
-  }
+  //     console.log(`${req.body.name} opened : `, orderOpened.data);
+  //     res.status(200).json(orderOpened.data);
+  //   } catch (error) {
+  //     console.error("Error placing order:", error.response.data);
+  //     // console.log("Error placing order:", response)
+  //     res.status(500).json({ message: "Error placing order" });
+  //   }
+  // }
 });
 
 module.exports = router;

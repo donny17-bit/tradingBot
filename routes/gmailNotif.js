@@ -85,8 +85,25 @@ router.post("/gmail-notification", async (req, res) => {
     console.log("📩 New Email Subject:", subject);
 
     // Print the body message
-    const body = extractEmailBody(fullMessage.data.payload);
-    console.log("📨 Full email body:\n", body);
+    const bodyData = msg.data.payload.parts?.find(
+      (p) => p.mimeType === "text/plain"
+    )?.body?.data;
+    if (!bodyData) return res.status(400).send("No message body found");
+
+    const decoded = Buffer.from(bodyData, "base64").toString("utf-8");
+
+    let jsonPayload;
+    try {
+      jsonPayload = JSON.parse(decoded);
+    } catch (err) {
+      console.error("Invalid JSON in email body:", err);
+      return res.status(400).send("Email body is not valid JSON");
+    }
+
+    // ---------------------------------------------
+    // const body = extractEmailBody(fullMessage.data.payload);
+    // console.log("📨 Full email body:\n", body);
+    // ---------------------------------------------
 
     // ✅ Store the new historyId
     const profile = await gmail.users.getProfile({ userId: "me" });
@@ -94,9 +111,12 @@ router.post("/gmail-notification", async (req, res) => {
       { last_history_id: profile.data.historyId },
       { where: { email: user.email } }
     );
+
+    // 🚀 Send request to /order
+    console.log("🚀 Sending order request:", jsonPayload);
+    await axios.post("http://127.0.0.1:3001/place-order", jsonPayload);
   }
 
-  // TODO: Optionally trigger message fetch here using historyId
   res.status(200).send("OK message received");
 });
 
