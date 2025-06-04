@@ -114,7 +114,7 @@ router.post("/gmail-notification", async (req, res) => {
     );
 
     // 🚀 Send request to /order
-    console.log("🚀 Sending order request:", jsonPayload);
+    // console.log("🚀 Sending order request:", jsonPayload);
     await axios.post("http://127.0.0.1:3001/place-order", jsonPayload);
   }
 
