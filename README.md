@@ -147,7 +147,7 @@ tradingbot/
 > *Web Developer | Trader*
 
 GitHub: [@drive1andonly](https://github.com/donny17-bit)  
-Instagram: [@crxless](https://instagram.com/_donny_w)
+Instagram: [@_donny_w](https://instagram.com/_donny_w)
 
 ---
 
