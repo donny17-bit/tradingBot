@@ -63,8 +63,6 @@ router.post("/gmail-notification", async (req, res) => {
     historyTypes: ["messageAdded"],
   });
 
-  console.log("📜 History Response:", historyRes.data);
-
   const addedMessages =
     historyRes.data.history?.flatMap((h) => h.messages) || [];
   if (addedMessages.length === 0) {
@@ -115,7 +113,7 @@ router.post("/gmail-notification", async (req, res) => {
 
     // 🚀 Send request to /order
     console.log("🚀 Sending order request jsonPayload:", jsonPayload);
-    // await axios.post("http://127.0.0.1:3001/place-order", jsonPayload);
+    await axios.post(`${process.env.BASE_URL}/place-order`, jsonPayload);
   }
 
   res.status(200).send("OK message received");
