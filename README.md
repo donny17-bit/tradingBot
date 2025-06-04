@@ -149,6 +149,7 @@ tradingbot/
 GitHub: [@drive1andonly](https://github.com/donny17-bit)  
 Instagram: [@_donny_w](https://instagram.com/_donny_w)
 
+
 ---
 
 ## 📄 License
