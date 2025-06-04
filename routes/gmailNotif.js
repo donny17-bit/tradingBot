@@ -115,6 +115,29 @@ router.post("/gmail-notification", async (req, res) => {
       return res.status(400).send("Email body is not valid JSON");
     }
 
+    // Validate required keys
+    const requiredKeys = [
+      "name",
+      "action",
+      "contracts",
+      "marketPosition",
+      "positionSize",
+      "prevMarketPosition",
+      "price",
+      "marginPrice",
+      "decimalCount",
+      "symbol",
+      "time",
+    ];
+
+    const isValid = requiredKeys.every((key) =>
+      jsonPayload.hasOwnProperty(key)
+    );
+    if (!isValid) {
+      console.log("⚠️ JSON body missing required fields:", parsedJson);
+      return res.status(400).send("Missing fields, skipped");
+    }
+
     // 🚀 Send request to /order
     console.log("🚀 Sending order request jsonPayload:", jsonPayload);
     await axios.post(`${process.env.BASE_URL}/place-order`, jsonPayload);
