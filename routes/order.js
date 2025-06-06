@@ -122,8 +122,8 @@ router.post("/place-order", async (req, res) => {
     }
   }
 
-  console.log(`No open/close position taken from ${req.body.name}`);
-  res.status(200).send("OK order request recieved");
+  // console.log(`No open/close position taken from ${req.body.name}`);
+  // res.status(200).send("OK order request recieved");
 });
 
 module.exports = router;
