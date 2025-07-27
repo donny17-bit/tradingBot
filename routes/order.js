@@ -37,6 +37,15 @@ router.post("/place-order", async (req, res) => {
   const price = Number(req.body.price);
   const marginPrice = Number(req.body.marginPrice);
 
+  const percentTP =
+    req.body.percentTP !== null && req.body.percentTP !== ""
+      ? Number(req.body.percentTP)
+      : null;
+  const percentSL =
+    req.body.percentSL !== null && req.body.percentSL !== ""
+      ? Number(req.body.percentSL)
+      : null;
+
   const closePriceLongTmp = price + marginPrice;
   const closePriceShortTmp = price - marginPrice;
   const openPriceLongTmp = price - marginPrice;
@@ -47,6 +56,26 @@ router.post("/place-order", async (req, res) => {
   const openPriceLong = openPriceLongTmp.toFixed(req.body.decimalCount);
   const openPriceShort = openPriceShortTmp.toFixed(req.body.decimalCount);
   const size = req.body.contracts;
+
+  const takeProfitLong =
+    percentTP !== null && percentSL !== null
+      ? Number(openPriceLong) +
+        Number(openPriceLong * (percentSL / 100) * percentTP)
+      : null;
+  const stopLossLong =
+    percentTP !== null && percentSL !== null
+      ? Number(openPriceLong) - Number(openPriceLong * (percentSL / 100))
+      : null;
+
+  const takeProfitShort =
+    percentTP !== null && percentSL !== null
+      ? Number(openPriceShort) -
+        Number(openPriceShort * (percentSL / 100) * percentTP)
+      : null;
+  const stopLossShort =
+    percentTP !== null && percentSL !== null
+      ? Number(openPriceShort) + Number(openPriceShort * (percentSL / 100))
+      : null;
 
   let body = {
     symbol: symbol,
@@ -59,6 +88,8 @@ router.post("/place-order", async (req, res) => {
     tradeSide: "open",
     orderType: process.env.ORDER_TYPE,
     force: process.env.FORCE,
+    // presetStopSurplusPrice: 0,
+    // presetStopLossPrice: 0,
   };
 
   // check if there is an open position
@@ -86,6 +117,7 @@ router.post("/place-order", async (req, res) => {
       );
 
       console.log(`${req.body.name} closed : `, orderClosed.data);
+      console.log("body : ", body);
       res.status(200).json(orderClosed.data);
     } catch (error) {
       console.error("Error placing order:", error.response.data);
@@ -98,6 +130,20 @@ router.post("/place-order", async (req, res) => {
       req.body.marketPosition === "long" ? openPriceLong : openPriceShort;
     body.side = req.body.action;
     body.tradeSide = "open";
+
+    if (req.body.percentTP != null || undefined) {
+      body.presetStopSurplusPrice =
+        req.body.marketPosition === "long"
+          ? takeProfitLong.toFixed(req.body.decimalCount)
+          : takeProfitShort.toFixed(req.body.decimalCount);
+    }
+
+    if (req.body.percentSL != null || undefined) {
+      body.presetStopLossPrice =
+        req.body.marketPosition === "long"
+          ? stopLossLong.toFixed(req.body.decimalCount)
+          : stopLossShort.toFixed(req.body.decimalCount);
+    }
 
     const options = option(
       "POST",
@@ -114,6 +160,7 @@ router.post("/place-order", async (req, res) => {
       );
 
       console.log(`${req.body.name} opened : `, orderOpened.data);
+      console.log("body : ", body);
       res.status(200).json(orderOpened.data);
     } catch (error) {
       console.error("Error placing order:", error.response.data);
